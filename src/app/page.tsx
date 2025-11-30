@@ -1,9 +1,22 @@
-import Image from "next/image";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Client } from "./client";
+import { Suspense } from "react";
 
-export default function Home() {
+const Page = async () => {
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+
   return (
     <div>
-      <p className="text-red-400">Hello World</p>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<p>Loading...</p>}>
+          <Client />
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
-}
+};
+
+export default Page;
