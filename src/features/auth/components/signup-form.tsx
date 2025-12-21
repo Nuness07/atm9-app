@@ -22,27 +22,52 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { ro } from "date-fns/locale";
+import { toast } from "sonner";
 
-const loginSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+const signupSchema = z
+  .object({
+    email: z.email("Please enter a valid email address"),
+    password: z.string().min(1, "Password is required"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof signupSchema>;
 
 export function SignupForm() {
   const router = useRouter();
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (values: LoginFormValues) => {
-    console.log(values);
+  const onSubmit = async (values: RegisterFormValues) => {
+    await authClient.signUp.email(
+      {
+        name: values.email,
+        email: values.email,
+        password: values.password,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: (e) => {
+          toast.error(e.error.message);
+        },
+      }
+    );
   };
 
   const isPending = form.formState.isSubmitting;
@@ -51,8 +76,8 @@ export function SignupForm() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Welcome back!</CardTitle>
-          <CardDescription>Log in to contiue</CardDescription>
+          <CardTitle>Get started</CardTitle>
+          <CardDescription>Sign up to contiue!</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -115,8 +140,25 @@ export function SignupForm() {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="*********"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <Button type="submit" disabled={isPending} className="w-full">
-                    Login
+                    Sign up
                   </Button>
                   <div className="text-center text-sm">
                     Already have an account?{" "}
