@@ -1,0 +1,19 @@
+<svg
+  id="logo-38"
+  width="78"
+  height="32"
+  viewBox="0 0 78 32"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f1c6c6" />
+      <stop offset="50%" stop-color="#b54f4f" />
+      <stop offset="100%" stop-color="#7a2e2e" />
+    </linearGradient>
+  </defs>
+
+  <path d="M55.5 0H77.5L58.5 32H36.5L55.5 0Z" fill="url(#redGradient)" />
+  <path d="M35.5 0H51.5L32.5 32H16.5L35.5 0Z" fill="url(#redGradient)" />
+  <path d="M19.5 0H31.5L12.5 32H0.5L19.5 0Z" fill="url(#redGradient)" />
+</svg>
