@@ -1,18 +1,31 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { LogoutButton } from "@/features/logout/loggout-button";
-import { authClient } from "@/lib/auth-client";
 import { requireAuth } from "@/lib/auth-utils";
-import { caller } from "@/trpc/server";
+import { useTRPC } from "@/trpc/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-const Page = async () => {
-  await requireAuth();
+const Page = () => {
+  // await requireAuth();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { data } = useQuery(trpc.getWorkflows.queryOptions());
 
-  const users = await caller.getUsers();
+  const createWorkflow = useMutation(
+    trpc.createWorkflow.mutationOptions({
+      onSuccess: () => {
+       toast.success("Workflow queued successfully");
+      },
+    })
+  );
 
   return (
     <div className="min-h-screen min-w-screen flex items-center justify-center gap-y-4 flex-col">
       Logado
-      {JSON.stringify(users)}
+      {JSON.stringify(data)}
+      <Button onClick={() => createWorkflow.mutate()}>Create Workflow</Button>
       <LogoutButton />
     </div>
   );
