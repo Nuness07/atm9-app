@@ -1,6 +1,9 @@
+import { google } from "@ai-sdk/google";
+import { generateText } from "ai";
+
 import { inngest } from "@/inngest/client";
-import { createTRPCRouter, protectedProcedure } from "../init";
 import prisma from "@/lib/db";
+import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const appRouter = createTRPCRouter({
   getUsers: protectedProcedure.query(({ ctx }) => {
@@ -20,8 +23,16 @@ export const appRouter = createTRPCRouter({
         email: "gnmf2000@gmail.com",
       },
     });
-    
+
     return { success: true, message: "Workflow queued" };
+  }),
+  testAI: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: "execute/ai",
+      data: {},
+    });
+
+    return { success: true, message: "AI Execution queued" };
   }),
 });
 // export type definition of API
