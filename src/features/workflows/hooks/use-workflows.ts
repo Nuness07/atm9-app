@@ -1,12 +1,11 @@
-import { useWorkflowsParams } from "./use-workflows-params";
-import { useTRPC } from "@/trpc/client";
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTRPC } from "@/trpc/client";
+import { useWorkflowsParams } from "./use-workflows-params";
 
 export const useSuspenseWorkflows = () => {
   const trpc = useTRPC();
@@ -28,7 +27,7 @@ export const useCreateWorkflow = () => {
       onError: (error) => {
         toast.error(`Error creating workflow: ${error.message}`);
       },
-    })
+    }),
   );
 };
 
@@ -42,12 +41,12 @@ export const useRemoveWorkflow = () => {
         toast.success(`Workflow ${data.name} removed`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
-          trpc.workflows.getOne.queryFilter({ id: data.id })
+          trpc.workflows.getOne.queryFilter({ id: data.id }),
         );
       },
       onError: (error) => {
         toast.error(`Error removing workflow: ${error.message}`);
       },
-    })
+    }),
   );
 };
