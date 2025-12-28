@@ -14,6 +14,15 @@ export const useSuspenseWorkflows = () => {
   return useSuspenseQuery(trpc.workflows.getMany.queryOptions(params));
 };
 
+export const useSuspenseWorkflow = (id: string) => {
+  const trpc = useTRPC();
+  return useSuspenseQuery(
+    trpc.workflows.getOne.queryOptions({
+      id,
+    })
+  );
+};
+
 export const useCreateWorkflow = () => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -27,7 +36,7 @@ export const useCreateWorkflow = () => {
       onError: (error) => {
         toast.error(`Error creating workflow: ${error.message}`);
       },
-    }),
+    })
   );
 };
 
@@ -41,12 +50,32 @@ export const useRemoveWorkflow = () => {
         toast.success(`Workflow ${data.name} removed`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
-          trpc.workflows.getOne.queryFilter({ id: data.id }),
+          trpc.workflows.getOne.queryFilter({ id: data.id })
         );
       },
       onError: (error) => {
         toast.error(`Error removing workflow: ${error.message}`);
       },
-    }),
+    })
+  );
+};
+
+export const useUpdateWorkflowName = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Workflow ${data.name} updated`);
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+        queryClient.invalidateQueries(
+          trpc.workflows.getOne.queryOptions({ id: data.id })
+        );
+      },
+      onError: (error) => {
+        toast.error(`Error updating workflow: ${error.message}`);
+      },
+    })
   );
 };
