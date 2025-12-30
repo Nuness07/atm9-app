@@ -8,12 +8,13 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "inngest:dev": "powershell -Command \"Start-Process '.\\bin\\inngest.exe' -ArgumentList 'dev -u http://localhost:3000/api/inngest' -NoNewWindow -Wait\"",
+    "inngest:dev": "npx --ignore-scripts=false inngest-cli@latest dev",
     "dev:all": "mprocs"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.1",
     "@hookform/resolvers": "^5.2.2",
+    "@paralleldrive/cuid2": "^3.0.6",
     "@polar-sh/better-auth": "^1.6.3",
     "@polar-sh/sdk": "^0.42.1",
     "@prisma/client": "6.19.0",
